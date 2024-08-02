@@ -12,19 +12,47 @@ import { styled } from "@mui/material/styles";
 import * as React from "react";
 import Chat from "../pages/chat/Chat";
 import Input from "./Input";
+import axios from "axios";
 
 export default function Nav() {
   const [open, setOpen] = React.useState(false);
+  const [input, setInput] = React.useState("");
+  const [messages, setMessages] = React.useState([]);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
+
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const handleInputChange = (newInput) => {
+    setInput(newInput);
+  };
+
+  const handleSend = async () => {
+    if (input.trim() === "") return;
+
+    const userMessage = { text: input, sender: "user" };
+    setMessages([...messages, userMessage]);
+    setInput("");
+
+    try {
+      const response = await axios.get(
+        "https://jsonplaceholder.typicode.com/comments/1"
+      );
+
+      const botMessage = { text: response.data.body, sender: "bot" };
+      setMessages((prevMessages) => [...prevMessages, botMessage]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  };
+
   return (
     <Box sx={{ display: "flex", height: "100dvh" }}>
       <CssBaseline />
-      {/* Top Nav Bar */}
       <AppBar
         position="fixed"
         open={open}
@@ -56,7 +84,6 @@ export default function Nav() {
         </Toolbar>
       </AppBar>
 
-      {/* Side Drawer */}
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           {open ? (
@@ -74,31 +101,43 @@ export default function Nav() {
         </Box>
       </Drawer>
 
-      {/* Rest of the page */}
       <Box
         component="main"
-        sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
+          height: "100vh",
+        }}
       >
-        {/* chat window */}
         <Box
           sx={{
             flexGrow: 1,
             mt: "64px",
             overflow: "auto",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
-          <Chat />
+          <Chat messages={messages} />
         </Box>
-        {/* Input Prompt */}
         <Box
           sx={{
             minHeight: "80px",
             width: "100%",
-
             alignSelf: "stretch",
+            position: "sticky",
+            bottom: 0,
+            bgcolor: "#FFFFFF",
+            zIndex: 1,
           }}
         >
-          <Input />
+          <Input
+            input={input}
+            onInputChange={handleInputChange}
+            handleSend={handleSend}
+            maxRows={6}
+          />
         </Box>
       </Box>
     </Box>
@@ -133,7 +172,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   backgroundColor: "#DEE2E6",
   ...theme.mixins.toolbar,
 }));

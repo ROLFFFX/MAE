@@ -3,7 +3,17 @@ import SendIcon from "@mui/icons-material/Send";
 import { Box, IconButton, InputAdornment, TextField } from "@mui/material";
 import React from "react";
 
-function Input() {
+function Input({ input, onInputChange, handleSend }) {
+  const handleChange = (event) => {
+    onInputChange(event.target.value);
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSend();
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -33,6 +43,9 @@ function Input() {
           placeholder="Send a message"
           multiline
           maxRows={6}
+          value={input}
+          onChange={handleChange}
+          //   onKeyPress={handleKeyPress}
           sx={{
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
@@ -49,7 +62,7 @@ function Input() {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton edge="end">
+                <IconButton edge="end" onClick={handleSend}>
                   <SendIcon />
                 </IconButton>
               </InputAdornment>
