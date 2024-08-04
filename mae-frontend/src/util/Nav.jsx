@@ -1,4 +1,5 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import MenuIcon from "@mui/icons-material/Menu";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -9,15 +10,17 @@ import List from "@mui/material/List";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
+import axios from "axios";
 import * as React from "react";
 import Chat from "../pages/chat/Chat";
 import Input from "./Input";
-import axios from "axios";
 
 export default function Nav() {
   const [open, setOpen] = React.useState(false);
   const [input, setInput] = React.useState("");
-  const [messages, setMessages] = React.useState([]);
+  const [messages, setMessages] = React.useState([
+    { text: "How could I assist you today?", sender: "Moxin Agent" },
+  ]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -43,8 +46,12 @@ export default function Nav() {
         "https://jsonplaceholder.typicode.com/comments/1"
       );
 
-      const botMessage = { text: response.data.body, sender: "bot" };
-      setMessages((prevMessages) => [...prevMessages, botMessage]);
+      const RAMessage = { text: response.data.body, sender: "Reasoner Agent" };
+      setMessages((prevMessages) => [...prevMessages, RAMessage]);
+      const CoTMessage = { text: response.data.body, sender: "CoT Agent" };
+      setMessages((prevMessages) => [...prevMessages, CoTMessage]);
+      const AAMessage = { text: response.data.body, sender: "Actor Agent" };
+      setMessages((prevMessages) => [...prevMessages, AAMessage]);
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -72,15 +79,41 @@ export default function Nav() {
           >
             <MenuIcon style={{ color: "#222222" }} />
           </IconButton>
+          <img
+            src="/src/assets/mae_icon.png"
+            alt="mae icon"
+            style={{ height: "30px", width: "30px" }}
+          ></img>
           <Typography
             variant="h6"
             noWrap
             component="div"
             fontFamily="monospace"
             color={"#222222"}
+            ml={2}
           >
             Moxin App Engine
           </Typography>
+
+          <Box sx={{ flexGrow: 1 }} />
+
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={() => {
+              window.open(
+                "https://github.com/moxin-org/Moxin-App-Engine",
+                "_blank"
+              );
+            }}
+            edge="end"
+            sx={{
+              marginRight: 2,
+              ...(open && { display: "none" }),
+            }}
+          >
+            <GitHubIcon style={{ width: 35, height: 35, color: "#222222" }} />
+          </IconButton>
         </Toolbar>
       </AppBar>
 

@@ -1,17 +1,45 @@
 import AtIcon from "@mui/icons-material/AlternateEmail";
 import SendIcon from "@mui/icons-material/Send";
-import { Box, IconButton, InputAdornment, TextField } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  InputAdornment,
+  Menu,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import React from "react";
+
+const agents = [
+  "Reasoner Agent",
+  "Actor Agent",
+  "Actor Agent",
+  "RA + AA + Loop",
+];
 
 function Input({ input, onInputChange, handleSend }) {
   const handleChange = (event) => {
     onInputChange(event.target.value);
   };
-
-  const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
       handleSend();
+      onInputChange("");
     }
+  };
+  const handleSendClick = () => {
+    handleSend();
+    onInputChange("");
+  };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClickMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -33,10 +61,35 @@ function Input({ input, onInputChange, handleSend }) {
         }}
       >
         <InputAdornment position="start">
-          <IconButton edge="start">
+          <IconButton edge="start" onClick={handleClickMenu}>
             <AtIcon />
           </IconButton>
         </InputAdornment>
+        <Menu
+          id="demo-positioned-menu"
+          aria-labelledby="demo-positioned-button"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleCloseMenu}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+        >
+          {agents.map((agent, index) => (
+            <MenuItem
+              key={index}
+              onClick={handleCloseMenu}
+              sx={{ fontSize: 14 }}
+            >
+              {agent}
+            </MenuItem>
+          ))}
+        </Menu>
         <TextField
           fullWidth
           variant="outlined"
@@ -45,7 +98,7 @@ function Input({ input, onInputChange, handleSend }) {
           maxRows={6}
           value={input}
           onChange={handleChange}
-          //   onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyDown}
           sx={{
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
@@ -62,7 +115,7 @@ function Input({ input, onInputChange, handleSend }) {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton edge="end" onClick={handleSend}>
+                <IconButton edge="end" onClick={handleSendClick}>
                   <SendIcon />
                 </IconButton>
               </InputAdornment>
