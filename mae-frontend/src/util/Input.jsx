@@ -10,14 +10,7 @@ import {
 } from "@mui/material";
 import React from "react";
 
-const agents = [
-  "Reasoner Agent",
-  "Actor Agent",
-  "Actor Agent",
-  "RA + AA + Loop",
-];
-
-function Input({ input, onInputChange, handleSend }) {
+function Input({ input, onInputChange, handleSend, agents }) {
   const handleChange = (event) => {
     onInputChange(event.target.value);
   };

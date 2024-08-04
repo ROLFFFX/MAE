@@ -15,6 +15,14 @@ import * as React from "react";
 import Chat from "../pages/chat/Chat";
 import Input from "./Input";
 
+// dummy agent list
+const agents = [
+  "Reasoner Agent",
+  "Actor Agent",
+  "Actor Agent",
+  "RA + AA + Loop",
+];
+
 export default function Nav() {
   const [open, setOpen] = React.useState(false);
   const [input, setInput] = React.useState("");
@@ -130,7 +138,9 @@ export default function Nav() {
           )}
         </DrawerHeader>
         <Box sx={{ bgcolor: "#DEE2E6", height: "100%" }}>
-          <List>{/* flag: drawer content goes here÷ */}</List>
+          <List>
+            {/* flag: drawer content goes here: checkbox/switch group for agents to show */}
+          </List>
         </Box>
       </Drawer>
 
@@ -169,6 +179,7 @@ export default function Nav() {
             input={input}
             onInputChange={handleInputChange}
             handleSend={handleSend}
+            agents={agents}
             maxRows={6}
           />
         </Box>
