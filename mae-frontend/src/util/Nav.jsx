@@ -14,26 +14,35 @@ import axios from "axios";
 import * as React from "react";
 import Chat from "../pages/chat/Chat";
 import Input from "./Input";
-import { ListItem } from "@mui/material";
+import { ListItem, Switch } from "@mui/material";
 import Loader from "./Loader";
 
 export default function Nav() {
-  const [open, setOpen] = React.useState(false);
-  const [input, setInput] = React.useState("");
-  const [agentList, setAgentList] = React.useState([]);
-  const serverUrl = import.meta.env.VITE_SERVER_URL;
-  const [messages, setMessages] = React.useState([
-    { text: "How could I assist you today?", sender: "Moxin Agent" },
-  ]);
+  /**
+   * Drawer States and handle functions
+   */
+  const [open, setOpen] = React.useState(true); // drawer open/close state
   const handleDrawerOpen = () => {
     setOpen(true);
   };
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  /**
+   * User Input
+   */
+  const [input, setInput] = React.useState("");
   const handleInputChange = (newInput) => {
     setInput(newInput);
   };
+
+  const [agentList, setAgentList] = React.useState([]);
+  const serverUrl = import.meta.env.VITE_SERVER_URL;
+  const [messages, setMessages] = React.useState([
+    { text: "How could I assist you today?", sender: "Moxin Agent" },
+  ]);
+
   /**
    * Loader States
    */
@@ -50,7 +59,6 @@ export default function Nav() {
    */
   React.useEffect(() => {
     const getAgentList = async () => {
-      //   setOpenLoader(true);
       try {
         const response = await axios.get(`${serverUrl}/agent_list`);
         setAgentList(response.data.data);
@@ -60,7 +68,7 @@ export default function Nav() {
         setOpenLoader(false);
       }
     };
-
+    setOpenLoader(true);
     getAgentList();
   }, []);
 
@@ -174,7 +182,26 @@ export default function Nav() {
         <Box sx={{ bgcolor: "#DEE2E6", height: "100%" }}>
           <List>
             {agentList.map(
-              (agent, index) => open && <ListItem key={index}>{agent}</ListItem>
+              (agent, index) =>
+                open && (
+                  <ListItem key={index}>
+                    <Box
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        direction: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography sx={{ fontSize: "15px" }}>
+                        {formatText(agent)}
+                      </Typography>
+                      <Box flexGrow={1}></Box>
+                      <Switch defaultChecked color="default" />
+                    </Box>
+                  </ListItem>
+                )
             )}
           </List>
         </Box>
@@ -290,3 +317,11 @@ const Drawer = styled(MuiDrawer, {
     "& .MuiDrawer-paper": closedMixin(theme),
   }),
 }));
+
+function formatText(str) {
+  let words = str.split("_");
+  let capitalizedWords = words.map((word) => {
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  });
+  return capitalizedWords.join(" ");
+}
