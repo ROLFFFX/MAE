@@ -14,33 +14,44 @@ import axios from "axios";
 import * as React from "react";
 import Chat from "../pages/chat/Chat";
 import Input from "./Input";
-
-// dummy agent list
-const agents = [
-  "Reasoner Agent",
-  "Actor Agent",
-  "Actor Agent",
-  "RA + AA + Loop",
-];
+import { ListItem } from "@mui/material";
 
 export default function Nav() {
   const [open, setOpen] = React.useState(false);
   const [input, setInput] = React.useState("");
+  const [agentList, setAgentList] = React.useState([]);
+  const serverUrl = import.meta.env.VITE_SERVER_URL;
   const [messages, setMessages] = React.useState([
     { text: "How could I assist you today?", sender: "Moxin Agent" },
   ]);
-
   const handleDrawerOpen = () => {
     setOpen(true);
   };
-
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
   const handleInputChange = (newInput) => {
     setInput(newInput);
   };
+
+  /*
+   * GET request to get agent list
+   */
+  React.useEffect(() => {
+    const getAgentList = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}/agent_list`);
+        setAgentList(response.data.data);
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
+    };
+    getAgentList();
+  }, []);
+
+  /*
+   * POST request for sending out user input
+   */
 
   const handleSend = async () => {
     if (input.trim() === "") return;
@@ -137,9 +148,12 @@ export default function Nav() {
             </IconButton>
           )}
         </DrawerHeader>
+        {/* Drawer Content */}
         <Box sx={{ bgcolor: "#DEE2E6", height: "100%" }}>
           <List>
-            {/* flag: drawer content goes here: checkbox/switch group for agents to show */}
+            {/* {agentList.map((agent, index) => (
+              <ListItem key={index}>{agent}</ListItem>
+            ))} */}
           </List>
         </Box>
       </Drawer>
@@ -179,7 +193,7 @@ export default function Nav() {
             input={input}
             onInputChange={handleInputChange}
             handleSend={handleSend}
-            agents={agents}
+            agents={agentList}
             maxRows={6}
           />
         </Box>

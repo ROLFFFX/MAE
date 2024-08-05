@@ -4,6 +4,34 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import React, { useEffect, useRef } from "react";
 
+const Chat = ({ messages }) => {
+  const conversationEndRef = useRef(null);
+  useEffect(() => {
+    conversationEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  return (
+    <Box>
+      <ConversationBox>
+        {messages.map((message, index) => (
+          <MessageBox key={index} sender={message.sender}>
+            {message.sender !== "user" && (
+              <Avatar
+                {...stringAvatar(message.sender)}
+                sx={{ marginRight: 2, height: 28, width: 28, fontSize: 15 }}
+              />
+            )}
+            <Typography variant="body1">{message.text}</Typography>
+          </MessageBox>
+        ))}
+        <div ref={conversationEndRef} />
+      </ConversationBox>
+    </Box>
+  );
+};
+
+export default Chat;
+
 const MessageBox = styled(Box)(({ theme, sender }) => ({
   maxWidth: "60%",
   padding: theme.spacing(1.5),
@@ -30,32 +58,3 @@ const stringAvatar = (name) => {
     children: `${nameParts[0][0]}${nameParts[1] ? nameParts[1][0] : ""}`,
   };
 };
-
-const Chat = ({ messages }) => {
-  const conversationEndRef = useRef(null);
-  useEffect(() => {
-    conversationEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-  console.log(messages);
-
-  return (
-    <Box>
-      <ConversationBox>
-        {messages.map((message, index) => (
-          <MessageBox key={index} sender={message.sender}>
-            {message.sender !== "user" && (
-              <Avatar
-                {...stringAvatar(message.sender)}
-                sx={{ marginRight: 2, height: 28, width: 28, fontSize: 15 }}
-              />
-            )}
-            <Typography variant="body1">{message.text}</Typography>
-          </MessageBox>
-        ))}
-        <div ref={conversationEndRef} />
-      </ConversationBox>
-    </Box>
-  );
-};
-
-export default Chat;
