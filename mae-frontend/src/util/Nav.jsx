@@ -15,6 +15,7 @@ import * as React from "react";
 import Chat from "../pages/chat/Chat";
 import Input from "./Input";
 import { ListItem } from "@mui/material";
+import Loader from "./Loader";
 
 export default function Nav() {
   const [open, setOpen] = React.useState(false);
@@ -33,44 +34,64 @@ export default function Nav() {
   const handleInputChange = (newInput) => {
     setInput(newInput);
   };
+  /**
+   * Loader States
+   */
+  const [openLoader, setOpenLoader] = React.useState(false);
+  //   const handleCloseLoader = () => {
+  //     setOpenLoader(false);
+  //   };
+  //   const handleOpenLoader = () => {
+  //     setOpenLoader(true);
+  //   };
 
   /*
    * GET request to get agent list
    */
   React.useEffect(() => {
     const getAgentList = async () => {
+      //   setOpenLoader(true);
       try {
         const response = await axios.get(`${serverUrl}/agent_list`);
         setAgentList(response.data.data);
       } catch (error) {
         console.error("Error sending message:", error);
+      } finally {
+        setOpenLoader(false);
       }
     };
+
     getAgentList();
   }, []);
 
   /*
-   * POST request for sending out user input
+   * (dummy) POST request for sending out user input
    */
 
   const handleSend = async () => {
     if (input.trim() === "") return;
-
     const userMessage = { text: input, sender: "user" };
     setMessages([...messages, userMessage]);
     setInput("");
-
     try {
       const response = await axios.get(
         "https://jsonplaceholder.typicode.com/comments/1"
       );
-
-      const RAMessage = { text: response.data.body, sender: "Reasoner Agent" };
-      setMessages((prevMessages) => [...prevMessages, RAMessage]);
-      const CoTMessage = { text: response.data.body, sender: "CoT Agent" };
-      setMessages((prevMessages) => [...prevMessages, CoTMessage]);
-      const AAMessage = { text: response.data.body, sender: "Actor Agent" };
-      setMessages((prevMessages) => [...prevMessages, AAMessage]);
+      //  dummy agent responses
+      agentList.map((agent, index) => {
+        const dummyMessage = {
+          index: index,
+          text: response.data.body,
+          sender: agent,
+        };
+        setMessages((prevMessages) => [...prevMessages, dummyMessage]);
+      });
+      //   const RAMessage = { text: response.data.body, sender: "Reasoner Agent" };
+      //   setMessages((prevMessages) => [...prevMessages, RAMessage]);
+      //   const CoTMessage = { text: response.data.body, sender: "CoT Agent" };
+      //   setMessages((prevMessages) => [...prevMessages, CoTMessage]);
+      //   const AAMessage = { text: response.data.body, sender: "Actor Agent" };
+      //   setMessages((prevMessages) => [...prevMessages, AAMessage]);
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -78,6 +99,7 @@ export default function Nav() {
 
   return (
     <Box sx={{ display: "flex", height: "100dvh" }}>
+      <Loader openLoader={openLoader}></Loader>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -151,9 +173,9 @@ export default function Nav() {
         {/* Drawer Content */}
         <Box sx={{ bgcolor: "#DEE2E6", height: "100%" }}>
           <List>
-            {/* {agentList.map((agent, index) => (
-              <ListItem key={index}>{agent}</ListItem>
-            ))} */}
+            {agentList.map(
+              (agent, index) => open && <ListItem key={index}>{agent}</ListItem>
+            )}
           </List>
         </Box>
       </Drawer>

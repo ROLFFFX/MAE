@@ -17,8 +17,8 @@ const Chat = ({ messages }) => {
           <MessageBox key={index} sender={message.sender}>
             {message.sender !== "user" && (
               <Avatar
-                {...stringAvatar(message.sender)}
-                sx={{ marginRight: 2, height: 28, width: 28, fontSize: 15 }}
+                {...stringAvatar(message.sender.toUpperCase())}
+                sx={{ marginRight: 2, height: 28, width: 28, fontSize: 14 }}
               />
             )}
             <Typography variant="body1">{message.text}</Typography>
@@ -53,7 +53,7 @@ const ConversationBox = styled(Box)(({ theme }) => ({
 }));
 
 const stringAvatar = (name) => {
-  const nameParts = name.split(" ");
+  const nameParts = name.split("_");
   return {
     children: `${nameParts[0][0]}${nameParts[1] ? nameParts[1][0] : ""}`,
   };
