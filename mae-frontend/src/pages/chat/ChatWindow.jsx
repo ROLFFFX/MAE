@@ -1,11 +1,10 @@
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import { styled } from "@mui/material/styles";
 import React, { useEffect, useRef } from "react";
+import { Box, Typography, Avatar } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 const ChatWindow = ({ messages }) => {
   const conversationEndRef = useRef(null);
+
   useEffect(() => {
     conversationEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);

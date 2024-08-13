@@ -1,24 +1,16 @@
 import { Route, Routes } from "react-router-dom";
 import Nav from "./util/Nav";
+import ChatPage from "./pages/chat/ChatPage";
 import ConfigPage from "./pages/config/ConfigPage";
-
-// const Layout = ({ children }) => {
-//   return (
-//     <div>
-//       <Nav children={children} />
-//     </div>
-//   );
-// };
 
 function App() {
   return (
-    <>
-      {/* <Nav /> */}
-      <Routes>
-        <Route path="/" element={<Nav />} />
+    <Routes>
+      <Route path="/" element={<Nav />}>
+        <Route index element={<ChatPage />} />
         <Route path="/config" element={<ConfigPage />} />
-      </Routes>
-    </>
+      </Route>
+    </Routes>
   );
 }
 

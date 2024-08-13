@@ -1,5 +1,4 @@
-import AtIcon from "@mui/icons-material/AlternateEmail";
-import SendIcon from "@mui/icons-material/Send";
+import React, { useState } from "react";
 import {
   Box,
   IconButton,
@@ -8,12 +7,17 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
-import React from "react";
+import AtIcon from "@mui/icons-material/AlternateEmail";
+import SendIcon from "@mui/icons-material/Send";
 
 function Input({ input, onInputChange, handleSend, agents }) {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
   const handleChange = (event) => {
     onInputChange(event.target.value);
   };
+
   const handleKeyDown = (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
@@ -21,16 +25,16 @@ function Input({ input, onInputChange, handleSend, agents }) {
       onInputChange("");
     }
   };
+
   const handleSendClick = () => {
     handleSend();
     onInputChange("");
   };
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
   const handleClickMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
@@ -41,13 +45,7 @@ function Input({ input, onInputChange, handleSend, agents }) {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        width: "100%",
-      }}
-    >
+    <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
       <Box
         sx={{
           display: "flex",
@@ -64,8 +62,7 @@ function Input({ input, onInputChange, handleSend, agents }) {
           </IconButton>
         </InputAdornment>
         <Menu
-          id="demo-positioned-menu"
-          aria-labelledby="demo-positioned-button"
+          id="agent-menu"
           anchorEl={anchorEl}
           open={open}
           onClose={handleCloseMenu}
@@ -126,11 +123,3 @@ function Input({ input, onInputChange, handleSend, agents }) {
 }
 
 export default Input;
-
-function formatText(str) {
-  let words = str.split("_");
-  let capitalizedWords = words.map((word) => {
-    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() + "|";
-  });
-  return capitalizedWords.join(" ");
-}
