@@ -1,6 +1,7 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import MenuIcon from "@mui/icons-material/Menu";
+import { Button, Grid, ListItem, Switch } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,13 +13,11 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import * as React from "react";
-import ChatWindow from "../pages/chat/ChatWindow";
-import Input from "./Input";
-import { Button, Grid, ListItem, Switch } from "@mui/material";
-import Loader from "./Loader";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../util/Loader";
+import ConfigWindow from "./ConfigWindow";
 
-export default function Nav() {
+export default function ConfigPage() {
   const navigate = useNavigate();
   /**
    * User Input
@@ -148,6 +147,8 @@ export default function Nav() {
     getAgentList();
   }, []);
 
+  const [chatPage, setChatPage] = React.useState("chat");
+
   return (
     <Box sx={{ display: "flex", height: "100dvh" }}>
       <Loader openLoader={openLoader}></Loader>
@@ -208,7 +209,6 @@ export default function Nav() {
           </IconButton>
         </Toolbar>
       </AppBar>
-
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           {open ? (
@@ -294,47 +294,7 @@ export default function Nav() {
           )}
         </Box>
       </Drawer>
-
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-          height: "100vh",
-        }}
-      >
-        <Box
-          sx={{
-            flexGrow: 1,
-            mt: "64px",
-            overflow: "auto",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <ChatWindow messages={messages} />
-        </Box>
-        <Box
-          sx={{
-            minHeight: "80px",
-            width: "100%",
-            alignSelf: "stretch",
-            position: "sticky",
-            bottom: 0,
-            bgcolor: "#FFFFFF",
-            zIndex: 1,
-          }}
-        >
-          <Input
-            input={input}
-            onInputChange={handleInputChange}
-            handleSend={handleSend}
-            agents={agentList}
-            maxRows={6}
-          />
-        </Box>
-      </Box>
+      <ConfigWindow />
     </Box>
   );
 }

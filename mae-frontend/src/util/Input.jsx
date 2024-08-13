@@ -35,6 +35,11 @@ function Input({ input, onInputChange, handleSend, agents }) {
     setAnchorEl(null);
   };
 
+  const handleMenuItemClick = (agent) => {
+    onInputChange(`@${agent} ${input}`);
+    handleCloseMenu();
+  };
+
   return (
     <Box
       sx={{
@@ -76,7 +81,7 @@ function Input({ input, onInputChange, handleSend, agents }) {
           {agents.map((agent, index) => (
             <MenuItem
               key={index}
-              onClick={handleCloseMenu}
+              onClick={() => handleMenuItemClick(agent)}
               sx={{ fontSize: 14 }}
             >
               {agent}
@@ -121,3 +126,11 @@ function Input({ input, onInputChange, handleSend, agents }) {
 }
 
 export default Input;
+
+function formatText(str) {
+  let words = str.split("_");
+  let capitalizedWords = words.map((word) => {
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() + "|";
+  });
+  return capitalizedWords.join(" ");
+}

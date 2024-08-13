@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import React, { useEffect, useRef } from "react";
 
-const Chat = ({ messages }) => {
+const ChatWindow = ({ messages }) => {
   const conversationEndRef = useRef(null);
   useEffect(() => {
     conversationEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -30,7 +30,7 @@ const Chat = ({ messages }) => {
   );
 };
 
-export default Chat;
+export default ChatWindow;
 
 const MessageBox = styled(Box)(({ theme, sender }) => ({
   maxWidth: "60%",
