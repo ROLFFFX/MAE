@@ -19,116 +19,23 @@ import Loader from "../components/Loader";
 
 export default function Nav() {
   const navigate = useNavigate();
-  /**
-   * User Input
-   */
-  const [input, setInput] = React.useState("");
-  const handleInputChange = (newInput) => {
-    setInput(newInput);
-  };
-
-  /*
-   * POST request for sending out user input
-   */
-  const handleSend = async () => {
-    if (input.trim() === "") return;
-
-    // Extract the agent name and task input
-    const agentMatch = input.match(/^@(\w+)\s*(.*)/);
-    let agentName, agentPath, taskInput;
-
-    if (agentMatch) {
-      agentName = agentMatch[1].toLowerCase(); // Convert to lowercase for consistent matching
-      taskInput = agentMatch[2];
-    } else {
-      // Default to "reasoner" agent if no @ sign is found
-      agentName = "reasoner";
-      taskInput = input;
-    }
-
-    switch (agentName) {
-      case "reasoner":
-        agentPath =
-          "mae/agent_link/agent_template/reasoner/scripts/reasoner_agent.py";
-        break;
-      case "web_search":
-        agentPath =
-          "mae/agent_link/agent_template/web_search/scripts/web_search_agent.py";
-        break;
-      default:
-        console.error("Unknown agent:", agentName);
-        return;
-    }
-
-    const userMessage = { text: input, sender: "user" };
-    setMessages([...messages, userMessage]);
-    setInput("");
-
-    try {
-      const response = await axios.post("http://localhost:8000/run_agent", {
-        agent_name: agentName,
-        agent_path: agentPath,
-        task_input: taskInput,
-        is_load_node_log: true,
-        work_dir: "string",
-      });
-
-      if (response.data.status === "success") {
-        const agentResponse = response.data.data.find(
-          (item) => item[`${agentName}_agent`]
-        );
-
-        if (agentResponse) {
-          const rawResponse = agentResponse[`${agentName}_agent`];
-          console.log("Raw agent response:", rawResponse);
-
-          try {
-            const dummyMessage = {
-              text: rawResponse,
-              sender: agentName,
-            };
-            setMessages((prevMessages) => [...prevMessages, dummyMessage]);
-          } catch (parseError) {
-            console.error("Parsing error:", parseError);
-          }
-        }
-      } else {
-        console.error("Error in response:", response.data);
-      }
-    } catch (error) {
-      console.error("Error sending message:", error);
-    }
-  };
-
   const serverUrl = import.meta.env.VITE_SERVER_URL;
 
   /**
    * Drawer States and handle functions
    */
-  const [open, setOpen] = React.useState(true); // drawer open/close state
+  const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
   const [agentList, setAgentList] = React.useState([]);
-  const [messages, setMessages] = React.useState([
-    { text: "How could I assist you today?", sender: "Moxin Agent" },
-  ]);
-
   /**
    * Loader States
    */
   const [openLoader, setOpenLoader] = React.useState(false);
-  //   const handleCloseLoader = () => {
-  //     setOpenLoader(false);
-  //   };
-  //   const handleOpenLoader = () => {
-  //     setOpenLoader(true);
-  //   };
-
   /*
    * GET request to get agent list
    */

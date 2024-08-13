@@ -10,7 +10,7 @@ const ChatWindow = ({ messages }) => {
   }, [messages]);
 
   return (
-    <Box>
+    <Box mt={"64px"}>
       <ConversationBox>
         {messages.map((message, index) => (
           <MessageBox key={index} sender={message.sender}>
@@ -20,7 +20,13 @@ const ChatWindow = ({ messages }) => {
                 sx={{ marginRight: 2, height: 28, width: 28, fontSize: 14 }}
               />
             )}
-            <Typography variant="body1">{message.text}</Typography>
+            <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
+              {typeof message.text === "string" &&
+              message.text.startsWith("{") &&
+              message.text.endsWith("}")
+                ? deserializeMessage(message.text)
+                : message.text}
+            </Typography>
           </MessageBox>
         ))}
         <div ref={conversationEndRef} />
@@ -36,7 +42,7 @@ const MessageBox = styled(Box)(({ theme, sender }) => ({
   padding: theme.spacing(1.5),
   margin: theme.spacing(1),
   borderRadius: theme.spacing(2),
-  backgroundColor: sender === "bot" ? "#F8F9FA" : "#F8F9FA",
+  backgroundColor: sender === "user" ? "#F8F9FA" : "#F8F9FA",
   alignSelf: sender === "user" ? "flex-end" : "flex-start",
   display: "flex",
   alignItems: "center",
@@ -57,3 +63,12 @@ const stringAvatar = (name) => {
     children: `${nameParts[0][0]}${nameParts[1] ? nameParts[1][0] : ""}`,
   };
 };
+
+function deserializeMessage(message) {
+  try {
+    return JSON.stringify(message, null, 2);
+  } catch (error) {
+    console.error("Failed to deserialize message:", error.message);
+    return message; // Return the original message if parsing fails
+  }
+}
