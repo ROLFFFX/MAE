@@ -86,8 +86,8 @@ export default function ChatPage() {
         return "mae/agent_link/agent_template/reasoner/scripts/reasoner_agent.py";
       case "web_search":
         return "mae/agent_link/agent_template/web_search/scripts/web_search_agent.py";
-      case "arxiv_agent":
-        return;
+      case "arxiv_research":
+        return "string";
       default:
         return null;
     }
