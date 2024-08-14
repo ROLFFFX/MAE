@@ -24,7 +24,10 @@ export default function ChatPage() {
       setOpenLoader(true);
       try {
         const response = await axios.get(`${serverUrl}/agent_list`);
-        setAgentList(response.data.data);
+        const filteredAgentList = response.data.data.filter(
+          (agent) => agent !== "__pycache__"
+        );
+        setAgentList(filteredAgentList);
       } catch (error) {
         console.error("Error getting agent list:", error);
       } finally {

@@ -43,7 +43,10 @@ export default function Nav() {
     const getAgentList = async () => {
       try {
         const response = await axios.get(`${serverUrl}/agent_list`);
-        setAgentList(response.data.data);
+        const filteredAgentList = response.data.data.filter(
+          (agent) => agent !== "__pycache__"
+        );
+        setAgentList(filteredAgentList);
       } catch (error) {
         console.error("Error sending message:", error);
       } finally {
