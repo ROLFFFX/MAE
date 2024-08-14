@@ -62,16 +62,17 @@ export default function ChatPage() {
 
       if (response.data.status === "success") {
         console.log(response.data);
-        const agentResponse = response.data.data.find(
-          (item) => item[`${agentName}_agent`]
-        );
-        if (agentResponse) {
-          const rawResponse = agentResponse[`${agentName}_agent`];
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            { text: rawResponse, sender: agentName },
-          ]);
-        }
+
+        response.data.data.forEach((item) => {
+          const agentKey = Object.keys(item)[0];
+          const rawResponse = item[agentKey];
+          if (rawResponse !== null) {
+            setMessages((prevMessages) => [
+              ...prevMessages,
+              { text: rawResponse, sender: agentKey },
+            ]);
+          }
+        });
       } else {
         console.error("Error in response:", response.data);
       }
@@ -85,7 +86,7 @@ export default function ChatPage() {
       case "reasoner":
         return "mae/agent_link/agent_template/reasoner/scripts/reasoner_agent.py";
       case "web_search":
-        return "mae/agent_link/agent_template/web_search/scripts/web_search_agent.py";
+        return "string";
       case "arxiv_research":
         return "string";
       default:
